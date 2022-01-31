@@ -32,7 +32,6 @@ import sonar.fluxnetworks.common.block.FluxPlugBlock;
 import sonar.fluxnetworks.common.block.FluxPointBlock;
 import sonar.fluxnetworks.common.block.FluxStorageBlock;
 import sonar.fluxnetworks.common.capability.SuperAdmin;
-import sonar.fluxnetworks.common.integration.TOPIntegration;
 import sonar.fluxnetworks.common.item.ItemAdminConfigurator;
 import sonar.fluxnetworks.common.item.ItemFluxConfigurator;
 import sonar.fluxnetworks.common.item.ItemFluxDevice;
@@ -72,9 +71,6 @@ public class CommonRegistration {
     public static void enqueueIMC(InterModEnqueueEvent event) {
         if (ModList.get().isLoaded("carryon")) {
             InterModComms.sendTo("carryon", "blacklistBlock", () -> FluxNetworks.MODID + ":*");
-        }
-        if (ModList.get().isLoaded("theoneprobe")) {
-            InterModComms.sendTo("theoneprobe", "getTheOneProbe", TOPIntegration::new);
         }
     }
 

@@ -14,7 +14,6 @@ import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.api.energy.IItemEnergyHandler;
 import sonar.fluxnetworks.api.network.NetworkMember;
 import sonar.fluxnetworks.api.network.WirelessType;
-import sonar.fluxnetworks.common.integration.CuriosIntegration;
 import sonar.fluxnetworks.common.misc.EnergyUtils;
 import sonar.fluxnetworks.common.tileentity.TileFluxController;
 
@@ -141,31 +140,6 @@ public class FluxControllerHandler extends BasicPointHandler<TileFluxController>
             }
             if (WirelessType.ARMOR.isActivated(wireless)) {
                 handlers.add(new WirelessHandler(inv.armorInventory::iterator, NOT_EMPTY));
-            }
-            if (WirelessType.CURIOS.isActivated(wireless) && FluxNetworks.curiosLoaded) {
-                final LazyOptional<IItemHandlerModifiable> curios = CuriosIntegration.getEquippedCurios(player);
-                handlers.add(new WirelessHandler(() -> {
-                    // the lazy optional is not cached by Curios
-                    if (curios.isPresent()) {
-                        return new Iterator<ItemStack>() {
-                            private final IItemHandler handler = curios.orElseThrow(IllegalStateException::new);
-                            private int count;
-
-                            @Override
-                            public boolean hasNext() {
-                                return count < handler.getSlots();
-                            }
-
-                            @Override
-                            public ItemStack next() {
-                                ItemStack next = handler.getStackInSlot(count);
-                                count++;
-                                return next;
-                            }
-                        };
-                    }
-                    return null;
-                }, NOT_EMPTY));
             }
             players.put(player, handlers);
             CHARGING_PLAYERS.add(player);

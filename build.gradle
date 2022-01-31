@@ -134,6 +134,7 @@ dependencies {
 
     compileOnly "mekanism:Mekanism:${mekanism_version}:api"
     runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")
+    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
 
     compile fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
