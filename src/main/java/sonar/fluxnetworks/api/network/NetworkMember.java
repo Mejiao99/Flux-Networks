@@ -11,7 +11,7 @@ public class NetworkMember {
 
     private UUID playerUUID;
     private String cachedName;
-    private AccessLevel accessLevel;
+
 
     private NetworkMember() {
     }
@@ -20,13 +20,12 @@ public class NetworkMember {
         readNBT(nbt);
     }
 
-    public static NetworkMember create(PlayerEntity player, AccessLevel accessLevel) {
+    public static NetworkMember create(PlayerEntity player) {
         NetworkMember t = new NetworkMember();
         GameProfile profile = player.getGameProfile();
 
         t.playerUUID = PlayerEntity.getUUID(profile);
         t.cachedName = profile.getName();
-        t.accessLevel = accessLevel;
 
         return t;
     }
@@ -57,27 +56,21 @@ public class NetworkMember {
         return cachedName;
     }
 
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
 
     public UUID getPlayerUUID() {
         return playerUUID;
     }
 
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-    }
+
 
     public void readNBT(@Nonnull CompoundNBT nbt) {
         playerUUID = nbt.getUniqueId("playerUUID");
         cachedName = nbt.getString("cachedName");
-        accessLevel = AccessLevel.values()[nbt.getByte("accessLevel")];
+
     }
 
     public void writeNBT(@Nonnull CompoundNBT nbt) {
         nbt.putUniqueId("playerUUID", playerUUID);
         nbt.putString("cachedName", cachedName);
-        nbt.putByte("accessLevel", (byte) accessLevel.ordinal());
     }
 }

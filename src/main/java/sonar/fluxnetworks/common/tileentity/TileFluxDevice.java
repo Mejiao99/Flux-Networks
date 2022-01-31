@@ -293,17 +293,6 @@ public abstract class TileFluxDevice extends TileEntity implements IFluxDevice, 
         getTransferHandler().readCustomNBT(tag, type);
     }
 
-    @Override
-    public boolean canPlayerAccess(@Nonnull PlayerEntity player) {
-        if (network.isValid()) {
-            if (PlayerEntity.getUUID(player.getGameProfile()).equals(playerUUID)) {
-                return true;
-            }
-            return network.getPlayerAccess(player).canUse();
-        }
-        return true;
-    }
-
     //// PACKETS\\\\
 
     /**

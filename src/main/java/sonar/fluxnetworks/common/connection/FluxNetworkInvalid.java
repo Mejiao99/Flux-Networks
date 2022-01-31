@@ -4,7 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Util;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.api.misc.FluxConstants;
-import sonar.fluxnetworks.api.network.AccessLevel;
 import sonar.fluxnetworks.api.network.FluxLogicType;
 
 import javax.annotation.Nonnull;
@@ -23,12 +22,6 @@ public class FluxNetworkInvalid extends BasicFluxNetwork {
     @Override
     public void onEndServerTick() {
 
-    }
-
-    @Nonnull
-    @Override
-    public AccessLevel getPlayerAccess(PlayerEntity player) {
-        return AccessLevel.BLOCKED;
     }
 
     @Nonnull

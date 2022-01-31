@@ -96,15 +96,6 @@ public interface IFluxNetwork {
 
     void onDelete();
 
-    /**
-     * Helper method to get player's access level for this network including super admin.
-     * Notice this method is server only.
-     *
-     * @param player the server player
-     * @return access level
-     */
-    @Nonnull
-    AccessLevel getPlayerAccess(PlayerEntity player);
 
     /*@Deprecated
     default void addNewMember(String name) {

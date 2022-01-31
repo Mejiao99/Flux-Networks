@@ -50,7 +50,7 @@ public class GuiTabMembers extends GuiTabPages<NetworkMember> {
     @Override
     protected void drawForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (networkValid) {
-            String str2 = accessLevel.getName();
+            String str2 = "superadminXL5";
             font.drawString(matrixStack, str2, 158 - font.getStringWidth(str2), 10, 0xffffff);
             font.drawString(matrixStack, FluxTranslate.SORT_BY.t() + ": " + TextFormatting.AQUA + FluxTranslate.SORTING_SMART.t(), 19, 10, 0xffffff);
             super.drawForegroundLayer(matrixStack, mouseX, mouseY);
@@ -100,7 +100,7 @@ public class GuiTabMembers extends GuiTabPages<NetworkMember> {
         GlStateManager.enableBlend();
         GlStateManager.enableAlphaTest();
 
-        int color = element.getAccessLevel().getColor();
+        int color = 0x4b0082;
 
         float f = (float) (color >> 16 & 255) / 255.0F;
         float f1 = (float) (color >> 8 & 255) / 255.0F;
@@ -118,7 +118,7 @@ public class GuiTabMembers extends GuiTabPages<NetworkMember> {
 
         font.drawString(matrixStack, TextFormatting.WHITE + element.getCachedName(), x + 4, y + 2, 0xffffff);
 
-        String p = element.getAccessLevel().getName();
+        String p = "superadminXL3";
         font.drawString(matrixStack, p, x + 142 - font.getStringWidth(p), y + 2, 0xffffff);
     }
 
@@ -128,7 +128,7 @@ public class GuiTabMembers extends GuiTabPages<NetworkMember> {
             return;
         List<String> strings = new ArrayList<>();
         strings.add(FluxTranslate.USERNAME.t() + ": " + TextFormatting.AQUA + element.getCachedName());
-        String permission = element.getAccessLevel().getName() + (element.getPlayerUUID().equals(player.getUniqueID()) ? " (" + FluxTranslate.YOU.t() + ")" : "");
+        String permission = "superadmindXL4" + (element.getPlayerUUID().equals(player.getUniqueID()) ? " (" + FluxTranslate.YOU.t() + ")" : "");
         strings.add(FluxTranslate.ACCESS.t() + ": " + TextFormatting.RESET + permission);
         //strings.add(TextFormatting.GRAY + "UUID: " + TextFormatting.RESET + element.getPlayerUUID().toString());
         /*if(element.getPlayerUUID().equals(player.getUniqueID())) {
@@ -183,7 +183,7 @@ public class GuiTabMembers extends GuiTabPages<NetworkMember> {
 
     @Override
     protected void sortGrids(SortType sortType) {
-        elements.sort(Comparator.comparing(NetworkMember::getAccessLevel).thenComparing(NetworkMember::getCachedName));
+        elements.sort(Comparator.comparing(NetworkMember::getCachedName));
         refreshCurrentPageInternal();
     }
 }

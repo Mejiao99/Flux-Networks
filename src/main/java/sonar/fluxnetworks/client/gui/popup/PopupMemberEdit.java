@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import sonar.fluxnetworks.api.misc.FluxConstants;
-import sonar.fluxnetworks.api.network.AccessLevel;
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.FluxClientCache;
 import sonar.fluxnetworks.client.gui.button.NormalButton;
@@ -26,51 +25,18 @@ public class PopupMemberEdit extends PopupCore<GuiTabMembers> {
     public void init() {
         super.init();
         popButtons.clear();
-        boolean editPermission = host.accessLevel.canEdit();
-        boolean ownerPermission = host.accessLevel.canDelete();
-        if (host.selectedPlayer.getAccessLevel() != AccessLevel.OWNER && editPermission) {
-            String text;
-            int length;
-            int i = 0;
-            if (host.selectedPlayer.getAccessLevel() == AccessLevel.BLOCKED || host.selectedPlayer.getAccessLevel() == AccessLevel.SUPER_ADMIN) {
-                text = FluxTranslate.SET_USER.t();
-                length = Math.max(64, font.getStringWidth(text) + 4);
-                popButtons.add(new NormalButton(text, 88 - length / 2, 76, length, 12, FluxConstants.TYPE_NEW_MEMBER));
-                ++i;
-                if (host.selectedPlayer.getAccessLevel() == AccessLevel.SUPER_ADMIN && ownerPermission) {
-                    text = FluxTranslate.TRANSFER_OWNERSHIP.t();
-                    length = Math.max(64, font.getStringWidth(text) + 4);
-                    transferOwnership = new NormalButton(text, 88 - length / 2, 76 + 16 * i, length, 12, 4).setUnclickable().setTextColor(0xffaa00aa);
-                    popButtons.add(transferOwnership);
-                }
-            } else {
-                if (ownerPermission) {
-                    if (host.selectedPlayer.getAccessLevel() == AccessLevel.USER) {
-                        text = FluxTranslate.SET_ADMIN.t();
-                        length = Math.max(64, font.getStringWidth(text) + 4);
-                        popButtons.add(new NormalButton(text, 88 - length / 2, 76, length, 12, FluxConstants.TYPE_SET_ADMIN));
-                    } else if (host.selectedPlayer.getAccessLevel() == AccessLevel.ADMIN) {
-                        text = FluxTranslate.SET_USER.t();
-                        length = Math.max(64, font.getStringWidth(text) + 4);
-                        popButtons.add(new NormalButton(text, 88 - length / 2, 76, length, 12, FluxConstants.TYPE_SET_USER));
-                    }
-                    ++i;
-                }
-                if (!host.selectedPlayer.getAccessLevel().canEdit() || ownerPermission) {
-                    text = FluxTranslate.CANCEL_MEMBERSHIP.t();
-                    length = Math.max(64, font.getStringWidth(text) + 4);
-                    popButtons.add(new NormalButton(text, 88 - length / 2, 76 + 16 * i++, length, 12,
-                            FluxConstants.TYPE_CANCEL_MEMBERSHIP).setTextColor(0xffff5555));
-                }
-                if (ownerPermission) {
-                    text = FluxTranslate.TRANSFER_OWNERSHIP.t();
-                    length = Math.max(64, font.getStringWidth(text) + 4);
-                    transferOwnership = new NormalButton(text, 88 - length / 2, 76 + 16 * i, length, 12,
-                            FluxConstants.TYPE_TRANSFER_OWNERSHIP).setUnclickable().setTextColor(0xffaa00aa);
-                    popButtons.add(transferOwnership);
-                }
-            }
-        }
+        String text;
+        int length;
+        int i = 0;
+        text = FluxTranslate.SET_USER.t();
+        length = Math.max(64, font.getStringWidth(text) + 4);
+        popButtons.add(new NormalButton(text, 88 - length / 2, 76, length, 12, FluxConstants.TYPE_NEW_MEMBER));
+        ++i;
+        text = FluxTranslate.TRANSFER_OWNERSHIP.t();
+        length = Math.max(64, font.getStringWidth(text) + 4);
+        transferOwnership = new NormalButton(text, 88 - length / 2, 76 + 16 * i, length, 12, 4).setUnclickable().setTextColor(0xffaa00aa);
+        popButtons.add(transferOwnership);
+
     }
 
     @Override
@@ -79,7 +45,7 @@ public class PopupMemberEdit extends PopupCore<GuiTabMembers> {
         super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
         drawCenterText(matrixStack, FluxClientCache.getFeedbackText(), 88, 162, FluxClientCache.getFeedbackColor());
         drawCenterText(matrixStack, TextFormatting.AQUA + host.selectedPlayer.getCachedName(), 88, 38, 0xffffff);
-        drawCenterText(matrixStack, host.selectedPlayer.getAccessLevel().getName(), 88, 48, 0xffffff);
+        drawCenterText(matrixStack, "superadmindXL2", 88, 48, 0xffffff);
         String text = host.selectedPlayer.getPlayerUUID().toString();
         matrixStack.push();
         matrixStack.scale(0.625f, 0.625f, 1);

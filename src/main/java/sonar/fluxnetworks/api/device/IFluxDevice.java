@@ -29,7 +29,9 @@ public interface IFluxDevice extends IMenuBridge {
 
     FluxDeviceType getDeviceType();
 
-    boolean canPlayerAccess(PlayerEntity player);
+    default boolean canPlayerAccess(PlayerEntity player) {
+        return true;
+    }
 
     int getLogicPriority(); // consider surge, for transfer on server
 

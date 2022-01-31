@@ -5,7 +5,7 @@ import sonar.fluxnetworks.FluxConfig;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.api.device.IFluxPlug;
 import sonar.fluxnetworks.api.device.IFluxPoint;
-import sonar.fluxnetworks.api.network.AccessLevel;
+
 import sonar.fluxnetworks.api.network.FluxLogicType;
 import sonar.fluxnetworks.api.network.NetworkMember;
 import sonar.fluxnetworks.common.capability.SuperAdmin;
@@ -162,25 +162,6 @@ public class FluxNetworkServer extends BasicFluxNetwork {
         sortConnections = true;
     }
 
-    @Nonnull
-    @Override
-    public AccessLevel getPlayerAccess(PlayerEntity player) {
-        if (FluxConfig.enableSuperAdmin) {
-            if (SuperAdmin.isPlayerSuperAdmin(player)) {
-                return AccessLevel.SUPER_ADMIN;
-            }
-        }
-        /*return network_players.getValue()
-                .stream().collect(Collectors.toMap(NetworkMember::getPlayerUUID, NetworkMember::getAccessPermission))
-                .getOrDefault(PlayerEntity.getUUID(player.getGameProfile()),
-                        network_security.getValue().isEncrypted() ? EnumAccessType.NONE : EnumAccessType.USER);*/
-        UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
-        Optional<NetworkMember> member = getMemberByUUID(uuid);
-        if (member.isPresent()) {
-            return member.get().getAccessLevel();
-        }
-        return security.isEncrypted() ? AccessLevel.BLOCKED : AccessLevel.USER;
-    }
 
     @Override
     public void onDelete() {

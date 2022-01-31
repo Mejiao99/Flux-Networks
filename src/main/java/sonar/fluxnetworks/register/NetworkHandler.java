@@ -145,11 +145,6 @@ public class NetworkHandler {
         return buf;
     }
 
-    private static void S2C_UpdateAccess(@Nonnull AccessLevel level, ServerPlayerEntity player) {
-        PacketBuffer buf = buffer(4);
-        buf.writeVarInt(level.ordinal());
-        sendToPlayer(buf, player);
-    }
 
     private static void S2C_UpdateConnection(int networkID, @Nonnull List<CompoundNBT> tags,
                                              ServerPlayerEntity player) {
@@ -190,7 +185,6 @@ public class NetworkHandler {
                 deleteNetwork(buf, player);
                 break;
             case 9:
-                responseAccessUpdate(buf, player);
                 break;
             case 10:
                 editConnections(buf, player);
@@ -246,12 +240,6 @@ public class NetworkHandler {
             return;
         }
 
-        final AccessLevel senderAccess = network.getPlayerAccess(sender);
-        // check permission
-        if (!senderAccess.canEdit()) {
-            S2C_Response(FeedbackInfo.NO_ADMIN, sender);
-            return;
-        }
 
         final UUID targetUUID = buf.readUniqueId();
         final int type = buf.readVarInt();
@@ -267,7 +255,7 @@ public class NetworkHandler {
                     .getPlayerList().getPlayerByUUID(targetUUID);
             // is online and not in the network
             if (target != null && !current.isPresent()) {
-                NetworkMember m = NetworkMember.create(target, AccessLevel.USER);
+                NetworkMember m = NetworkMember.create(target);
                 network.getRawMemberMap().put(m.getPlayerUUID(), m);
                 S2C_Response(FeedbackInfo.SUCCESS, sender);
                 sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_MEMBERS), sender);
@@ -276,51 +264,34 @@ public class NetworkHandler {
             }
         } else if (current.isPresent()) {
             final NetworkMember c = current.get();
-            if (self || c.getAccessLevel() == AccessLevel.OWNER) {
+            if (self) {
                 return;
             }
             if (type == FluxConstants.TYPE_SET_ADMIN) {
-                // we are not owner or super admin
-                if (!senderAccess.canDelete()) {
-                    S2C_Response(FeedbackInfo.NO_OWNER, sender);
-                    return;
-                }
-                c.setAccessLevel(AccessLevel.ADMIN);
+
             } else if (type == FluxConstants.TYPE_SET_USER) {
-                c.setAccessLevel(AccessLevel.USER);
+
             } else if (type == FluxConstants.TYPE_CANCEL_MEMBERSHIP) {
                 network.getRawMemberMap().remove(targetUUID);
             } else if (type == FluxConstants.TYPE_TRANSFER_OWNERSHIP) {
-                if (!senderAccess.canDelete()) {
-                    S2C_Response(FeedbackInfo.NO_OWNER, sender);
-                    return;
-                }
                 /*network.getSetting(NetworkSettings.NETWORK_PLAYERS).stream()
                     .filter(f -> f.getAccessPermission().canDelete()).findFirst().ifPresent(s -> s
                     .setAccessPermission(AccessPermission.USER));*/
-                network.getAllMembers().removeIf(f -> f.getAccessLevel().canDelete());
+                network.getAllMembers().removeIf(f -> true);
                 network.setOwnerUUID(targetUUID);
-                c.setAccessLevel(AccessLevel.OWNER);
             }
             S2C_Response(FeedbackInfo.SUCCESS, sender);
             sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_MEMBERS), sender);
         } else if (type == FluxConstants.TYPE_TRANSFER_OWNERSHIP) {
-            if (!senderAccess.canDelete()) {
-                S2C_Response(FeedbackInfo.NO_OWNER, sender);
-                return;
-            }
-            // super admin can still transfer ownership to self
-            if (self && senderAccess == AccessLevel.OWNER) {
-                return;
-            }
+
             PlayerEntity target = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(targetUUID);
             // is online
             if (target != null) {
                 /*network.getSetting(NetworkSettings.NETWORK_PLAYERS).stream()
                         .filter(f -> f.getAccessPermission().canDelete()).findFirst().ifPresent(s -> s
                         .setAccessPermission(AccessPermission.USER));*/
-                network.getAllMembers().removeIf(f -> f.getAccessLevel().canDelete());
-                NetworkMember m = NetworkMember.create(target, AccessLevel.OWNER);
+                network.getAllMembers().removeIf(f -> true);
+                NetworkMember m = NetworkMember.create(target);
                 network.getRawMemberMap().put(m.getPlayerUUID(), m);
                 network.setOwnerUUID(targetUUID);
                 S2C_Response(FeedbackInfo.SUCCESS, sender);
@@ -343,28 +314,25 @@ public class NetworkHandler {
         final SecurityType security = SecurityType.values()[buf.readVarInt()];
         final String password = buf.readString(256);
 
-        if (network.getPlayerAccess(player).canEdit()) {
-            if (!network.getNetworkName().equals(name)) {
-                network.setNetworkName(name);
-            }
-            if (network.getNetworkColor() != color) {
-                network.setNetworkColor(color);
-                network.getConnections(FluxLogicType.ANY).forEach(device -> {
-                    if (device instanceof TileFluxDevice) {
-                        ((TileFluxDevice) device).sendFullUpdatePacket();
-                    }
-                }); // update appearance
-            }
-            if (FluxUtils.isLegalPassword(password)) {
-                network.getSecurity().set(security, password);
-            } else {
-                S2C_Response(FeedbackInfo.ILLEGAL_PASSWORD, player);
-            }
-            sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
-            S2C_Response(FeedbackInfo.SUCCESS_2, player);
-        } else {
-            S2C_Response(FeedbackInfo.NO_ADMIN, player);
+        if (!network.getNetworkName().equals(name)) {
+            network.setNetworkName(name);
         }
+        if (network.getNetworkColor() != color) {
+            network.setNetworkColor(color);
+            network.getConnections(FluxLogicType.ANY).forEach(device -> {
+                if (device instanceof TileFluxDevice) {
+                    ((TileFluxDevice) device).sendFullUpdatePacket();
+                }
+            }); // update appearance
+        }
+        if (FluxUtils.isLegalPassword(password)) {
+            network.getSecurity().set(security, password);
+        } else {
+            S2C_Response(FeedbackInfo.ILLEGAL_PASSWORD, player);
+        }
+        sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
+        S2C_Response(FeedbackInfo.SUCCESS_2, player);
+
     }
 
     private static void editWireless(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
@@ -372,13 +340,10 @@ public class NetworkHandler {
         if (!network.isValid()) {
             return;
         }
-        if (network.getPlayerAccess(player).canEdit()) {
-            network.setWirelessMode(buf.readVarInt());
-            sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
-            S2C_Response(FeedbackInfo.SUCCESS, player);
-        } else {
-            S2C_Response(FeedbackInfo.NO_ADMIN, player);
-        }
+        network.setWirelessMode(buf.readVarInt());
+        sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
+        S2C_Response(FeedbackInfo.SUCCESS, player);
+
     }
 
     private static void responseNetworkUpdate(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
@@ -414,8 +379,6 @@ public class NetworkHandler {
                 !network.getConnections(FluxLogicType.CONTROLLER).isEmpty()) {
             S2C_Response(FeedbackInfo.HAS_CONTROLLER, player);
         } else {
-            if (network.isValid() && noAccess(buf.readString(256), player, network))
-                return;
             if (network.isValid()) {
                 flux.setConnectionOwner(PlayerEntity.getUUID(player.getGameProfile()));
             }
@@ -424,24 +387,6 @@ public class NetworkHandler {
         }
     }
 
-    private static boolean noAccess(String password, ServerPlayerEntity player, @Nonnull IFluxNetwork network) {
-        // not a member
-        if (!network.getPlayerAccess(player).canUse()) {
-            if (network.getSecurity().getType() == SecurityType.PRIVATE) {
-                S2C_Response(FeedbackInfo.REJECT, player);
-                return true;
-            }
-            if (password.isEmpty()) {
-                S2C_Response(FeedbackInfo.PASSWORD_REQUIRE, player);
-                return true;
-            }
-            if (!password.equals(network.getSecurity().getPassword())) {
-                S2C_Response(FeedbackInfo.REJECT, player);
-                return true;
-            }
-        }
-        return false;
-    }
 
     private static void createNetwork(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
         final String name = buf.readString(256);
@@ -462,28 +407,16 @@ public class NetworkHandler {
     private static void deleteNetwork(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
         IFluxNetwork network = FluxNetworkData.getNetwork(buf.readVarInt());
         if (network.isValid()) {
-            if (network.getPlayerAccess(player).canDelete()) {
-                FluxNetworkData.get().deleteNetwork(network);
-                S2C_Response(FeedbackInfo.SUCCESS, player);
-            } else {
-                S2C_Response(FeedbackInfo.NO_OWNER, player);
-            }
+            FluxNetworkData.get().deleteNetwork(network);
+            S2C_Response(FeedbackInfo.SUCCESS, player);
+
         }
     }
 
-    private static void responseAccessUpdate(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
-        IFluxNetwork network = FluxNetworkData.getNetwork(buf.readVarInt());
-        AccessLevel access = network.getPlayerAccess(player);
-        S2C_UpdateAccess(access, player);
-    }
 
     private static void editConnections(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
         final IFluxNetwork network = FluxNetworkData.getNetwork(buf.readVarInt());
         if (!network.isValid()) {
-            return;
-        }
-        if (!network.getPlayerAccess(player).canEdit()) {
-            S2C_Response(FeedbackInfo.NO_ADMIN, player);
             return;
         }
         final int flags = buf.readVarInt();
@@ -601,8 +534,6 @@ public class NetworkHandler {
         int networkID = buf.readVarInt();
         IFluxNetwork network = FluxNetworkData.getNetwork(networkID);
         if (network.isValid()) {
-            if (noAccess(buf.readString(256), player, network))
-                return;
             ItemStack stack = player.getHeldItemMainhand();
             if (stack.getItem() == RegistryItems.FLUX_CONFIGURATOR) {
                 CompoundNBT configs = stack.getOrCreateChildTag(FluxConstants.TAG_FLUX_CONFIG);
@@ -948,7 +879,6 @@ public class NetworkHandler {
                     updateNetwork(buf, player);
                     break;
                 case 4:
-                    updateAccess(buf, player);
                     break;
                 case 5:
                     updateConnection(buf, player);
@@ -997,15 +927,6 @@ public class NetworkHandler {
                 updatedNetworks.put(buf.readVarInt(), buf.readCompoundTag());
             }
             FluxClientCache.updateNetworks(updatedNetworks, type);
-        }
-
-        private static void updateAccess(@Nonnull PacketBuffer buf, @Nonnull ClientPlayerEntity player) {
-            AccessLevel access = AccessLevel.values()[buf.readVarInt()];
-            Screen screen = Minecraft.getInstance().currentScreen;
-            if (screen instanceof GuiFluxCore) {
-                GuiFluxCore gui = (GuiFluxCore) screen;
-                gui.accessLevel = access;
-            }
         }
 
         private static void updateConnection(@Nonnull PacketBuffer buf, @Nonnull ClientPlayerEntity player) {

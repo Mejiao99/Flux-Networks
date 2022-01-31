@@ -8,7 +8,6 @@ import net.minecraft.util.text.TextFormatting;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.api.misc.EnergyType;
 import sonar.fluxnetworks.api.misc.FeedbackInfo;
-import sonar.fluxnetworks.api.network.AccessLevel;
 import sonar.fluxnetworks.api.network.IFluxNetwork;
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.FluxClientCache;
@@ -33,7 +32,6 @@ public abstract class GuiFluxCore extends GuiPopupHost {
 
     public final PlayerEntity player; // client player
     public IFluxNetwork network;
-    public AccessLevel accessLevel = AccessLevel.BLOCKED;
     protected boolean networkValid;
 
     public GuiFluxCore(@Nonnull FluxMenu container, @Nonnull PlayerEntity player) {
@@ -41,11 +39,6 @@ public abstract class GuiFluxCore extends GuiPopupHost {
         this.player = player;
         this.network = FluxClientCache.getNetwork(container.bridge.getNetworkID());
         this.networkValid = network.isValid();
-        if (FluxClientCache.superAdmin) {
-            accessLevel = AccessLevel.SUPER_ADMIN;
-        } else {
-            network.getMemberByUUID(PlayerEntity.getUUID(player.getGameProfile())).ifPresent(m -> accessLevel = m.getAccessLevel());
-        }
     }
 
     @Override

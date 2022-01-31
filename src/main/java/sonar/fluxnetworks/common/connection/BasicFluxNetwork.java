@@ -72,7 +72,7 @@ public class BasicFluxNetwork implements IFluxNetwork {
         networkName = name;
         networkColor = color;
         ownerUUID = PlayerEntity.getUUID(creator.getGameProfile());
-        members.put(ownerUUID, NetworkMember.create(creator, AccessLevel.OWNER));
+        members.put(ownerUUID, NetworkMember.create(creator));
     }
 
     @Override
@@ -161,11 +161,6 @@ public class BasicFluxNetwork implements IFluxNetwork {
 
     }
 
-    @Nonnull
-    @Override
-    public AccessLevel getPlayerAccess(PlayerEntity player) {
-        throw new IllegalStateException();
-    }
 
     @Nonnull
     @Override
@@ -262,8 +257,7 @@ public class BasicFluxNetwork implements IFluxNetwork {
                 players.stream().filter(p -> members.stream().noneMatch(c -> c.getPlayerUUID().equals(p.getUniqueID())))
                         .forEach(valid -> {
                             CompoundNBT t1 = new CompoundNBT();
-                            NetworkMember m = NetworkMember.create(valid,
-                                    SuperAdmin.isPlayerSuperAdmin(valid) ? AccessLevel.SUPER_ADMIN : AccessLevel.BLOCKED);
+                            NetworkMember m = NetworkMember.create(valid);
                             m.writeNBT(t1);
                             list.add(t1);
                         });
