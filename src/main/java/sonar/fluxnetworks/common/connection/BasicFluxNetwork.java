@@ -49,7 +49,6 @@ public class BasicFluxNetwork implements IFluxNetwork {
 
     private int wirelessMode;
 
-    protected final NetworkSecurity security = new NetworkSecurity();
     protected final NetworkStatistics statistics = new NetworkStatistics(this);
     protected final Object2ObjectMap<UUID, NetworkMember> members = new Object2ObjectOpenHashMap<>();
     // On server: TileFluxDevice (loaded) and PhantomFluxDevice (unloaded)
@@ -120,10 +119,6 @@ public class BasicFluxNetwork implements IFluxNetwork {
         ownerUUID = uuid;
     }
 
-    @Override
-    public NetworkSecurity getSecurity() {
-        return security;
-    }
 
     @Override
     public NetworkStatistics getStatistics() {
@@ -216,7 +211,6 @@ public class BasicFluxNetwork implements IFluxNetwork {
             nbt.putInt(NETWORK_COLOR, networkColor);
             nbt.putUniqueId(OWNER_UUID, ownerUUID);
             nbt.putInt(WIRELESS_MODE, wirelessMode);
-            security.writeNBT(nbt, type == FluxConstants.TYPE_SAVE_ALL);
         }
         if (type == FluxConstants.TYPE_SAVE_ALL) {
             Collection<NetworkMember> members = this.members.values();
@@ -321,7 +315,6 @@ public class BasicFluxNetwork implements IFluxNetwork {
             networkColor = nbt.getInt(NETWORK_COLOR);
             ownerUUID = nbt.getUniqueId(OWNER_UUID);
             wirelessMode = nbt.getInt(WIRELESS_MODE);
-            security.readNBT(nbt);
         }
         if (type == FluxConstants.TYPE_SAVE_ALL) {
             ListNBT list = nbt.getList(PLAYER_LIST, Constants.NBT.TAG_COMPOUND);

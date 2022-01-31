@@ -324,11 +324,6 @@ public class NetworkHandler {
                 }
             }); // update appearance
         }
-        if (FluxUtils.isLegalPassword(password)) {
-            network.getSecurity().set(password);
-        } else {
-            S2C_Response(FeedbackInfo.ILLEGAL_PASSWORD, player);
-        }
         sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
         S2C_Response(FeedbackInfo.SUCCESS_2, player);
 

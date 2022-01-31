@@ -49,8 +49,6 @@ public interface IFluxNetwork {
 
     void setOwnerUUID(UUID uuid);
 
-    NetworkSecurity getSecurity();
-
     NetworkStatistics getStatistics();
 
     /**

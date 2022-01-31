@@ -125,7 +125,6 @@ public class FluxNetworkData extends WorldSavedData {
             return null;
         }
         FluxNetworkServer network = new FluxNetworkServer(uniqueID++, name, color, creator);
-        network.getSecurity().set(password);
 
         if (networks.put(network.getNetworkID(), network) != null) {
             FluxNetworks.LOGGER.warn("Network IDs are not unique when creating network");
