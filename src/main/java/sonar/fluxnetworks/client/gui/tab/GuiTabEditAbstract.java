@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import sonar.fluxnetworks.api.gui.EnumNavigationTab;
-import sonar.fluxnetworks.api.network.SecurityType;
+
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
 import sonar.fluxnetworks.client.gui.basic.GuiTabCore;
@@ -29,7 +29,6 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
 
     protected List<ColorButton> colorButtons = Lists.newArrayList();
 
-    protected SecurityType securityType;
     public ColorButton colorBtn;
     public FluxTextWidget nameField;
     public FluxTextWidget passwordField;
@@ -76,7 +75,7 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
 
             drawCenterText(matrixStack, getNavigationTab().getTranslatedName(), 88, 10, 0xb4b4b4);
             font.drawString(matrixStack, FluxTranslate.NETWORK_NAME.t() + ":", 14, 30, 0x606060);
-            font.drawString(matrixStack, FluxTranslate.NETWORK_SECURITY.t() + ": " + TextFormatting.AQUA + securityType.getName(), 14, 50, 0x606060);
+            font.drawString(matrixStack, FluxTranslate.NETWORK_SECURITY.t() + ": " + TextFormatting.AQUA + "securityTypeXL1", 14, 50, 0x606060);
             //font.drawString(matrixStack, FluxTranslate.NETWORK_ENERGY.t() + ": " + TextFormatting.AQUA + energyType.getName(), 14, 78, 0x606060);
             font.drawString(matrixStack, FluxTranslate.NETWORK_COLOR.t() + ":", 14, 92, 0x606060);
         }
@@ -88,7 +87,6 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
         ////TODO MINOR replace with "text buttons
         if (mouseButton == 0) {
             if (mouseX > guiLeft + 50 && mouseX < guiLeft + 150 && mouseY > guiTop + 48 && mouseY < getGuiTop() + 60) {
-                securityType = FluxUtils.incrementEnum(securityType, SecurityType.values());
                 passwordField.setText("");
                 passwordField.setVisible(true);
                 onEditSettingsChanged();

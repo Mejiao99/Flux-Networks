@@ -20,7 +20,7 @@ import sonar.fluxnetworks.FluxConfig;
 import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.api.misc.FluxConstants;
 import sonar.fluxnetworks.api.network.IFluxNetwork;
-import sonar.fluxnetworks.api.network.SecurityType;
+
 import sonar.fluxnetworks.common.connection.FluxNetworkInvalid;
 import sonar.fluxnetworks.common.connection.FluxNetworkServer;
 import sonar.fluxnetworks.register.NetworkHandler;
@@ -112,7 +112,7 @@ public class FluxNetworkData extends WorldSavedData {
 
     @Nullable
     public IFluxNetwork createNetwork(@Nonnull PlayerEntity creator, String name, int color,
-                                      SecurityType securityType, String password) {
+                                      String password) {
         final boolean limitReached;
         if (FluxConfig.maximumPerPlayer == -1) {
             limitReached = false;
@@ -125,7 +125,7 @@ public class FluxNetworkData extends WorldSavedData {
             return null;
         }
         FluxNetworkServer network = new FluxNetworkServer(uniqueID++, name, color, creator);
-        network.getSecurity().set(securityType, password);
+        network.getSecurity().set(password);
 
         if (networks.put(network.getNetworkID(), network) != null) {
             FluxNetworks.LOGGER.warn("Network IDs are not unique when creating network");

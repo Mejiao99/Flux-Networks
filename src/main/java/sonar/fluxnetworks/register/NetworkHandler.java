@@ -311,7 +311,6 @@ public class NetworkHandler {
         }
         final String name = buf.readString(256);
         final int color = buf.readInt();
-        final SecurityType security = SecurityType.values()[buf.readVarInt()];
         final String password = buf.readString(256);
 
         if (!network.getNetworkName().equals(name)) {
@@ -326,7 +325,7 @@ public class NetworkHandler {
             }); // update appearance
         }
         if (FluxUtils.isLegalPassword(password)) {
-            network.getSecurity().set(security, password);
+            network.getSecurity().set(password);
         } else {
             S2C_Response(FeedbackInfo.ILLEGAL_PASSWORD, player);
         }
@@ -391,10 +390,10 @@ public class NetworkHandler {
     private static void createNetwork(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
         final String name = buf.readString(256);
         final int color = buf.readInt();
-        final SecurityType security = SecurityType.values()[buf.readVarInt()];
+
         final String password = buf.readString(256);
         if (FluxUtils.isLegalPassword(password)) {
-            if (FluxNetworkData.get().createNetwork(player, name, color, security, password) != null) {
+            if (FluxNetworkData.get().createNetwork(player, name, color,password) != null) {
                 S2C_Response(FeedbackInfo.SUCCESS, player);
             } else {
                 S2C_Response(FeedbackInfo.NO_SPACE, player);
@@ -711,13 +710,12 @@ public class NetworkHandler {
 
     // edit network settings
     @OnlyIn(Dist.CLIENT)
-    public static void C2S_EditNetwork(int networkID, String name, int color, @Nonnull SecurityType security,
+    public static void C2S_EditNetwork(int networkID, String name, int color,
                                        String password) {
         PacketBuffer buf = buffer(3);
         buf.writeVarInt(networkID);
         buf.writeString(name, 256);
         buf.writeInt(color);
-        buf.writeVarInt(security.ordinal());
         buf.writeString(password, 256);
         sendToServer(buf);
     }
@@ -765,11 +763,11 @@ public class NetworkHandler {
 
     // create a flux network
     @OnlyIn(Dist.CLIENT)
-    public static void C2S_CreateNetwork(String name, int color, @Nonnull SecurityType security, String password) {
+    public static void C2S_CreateNetwork(String name, int color, String password) {
         PacketBuffer buf = buffer(7);
         buf.writeString(name, 256);
         buf.writeInt(color);
-        buf.writeVarInt(security.ordinal());
+
         buf.writeString(password, 256);
         sendToServer(buf);
     }

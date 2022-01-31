@@ -93,15 +93,6 @@ public class GuiTabSelection extends GuiTabPages<IFluxNetwork> {
         float f2 = (float) (color & 255) / 255.0F;
 
         boolean selected = container.bridge.getNetworkID() == element.getNetworkID();
-        boolean isEncrypted = element.getSecurity().isEncrypted();
-
-        if (isEncrypted) {
-            if (selected) {
-                blit(matrixStack, x + 131, y, 159, 16, 16, elementHeight);
-            } else {
-                blit(matrixStack, x + 131, y, 175, 16, 16, elementHeight);
-            }
-        }
 
         String text = element.getNetworkName();
 

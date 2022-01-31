@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFW;
 import sonar.fluxnetworks.api.gui.EnumNavigationTab;
 import sonar.fluxnetworks.api.gui.EnumNetworkColor;
 import sonar.fluxnetworks.api.misc.FeedbackInfo;
-import sonar.fluxnetworks.api.network.SecurityType;
+
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.FluxClientCache;
 import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
@@ -28,9 +28,6 @@ public class GuiTabSettings extends GuiTabEditAbstract {
 
     public GuiTabSettings(@Nonnull FluxMenu container, @Nonnull PlayerEntity player) {
         super(container, player);
-        if (networkValid) {
-            securityType = network.getSecurity().getType();
-        }
     }
 
     public EnumNavigationTab getNavigationTab() {
@@ -102,7 +99,7 @@ public class GuiTabSettings extends GuiTabEditAbstract {
             switch (button.id) {
                 case 3:
                     NetworkHandler.C2S_EditNetwork(network.getNetworkID(),
-                            nameField.getText(), colorBtn.color, securityType, passwordField.getText());
+                            nameField.getText(), colorBtn.color, passwordField.getText());
                     break;
                 case 4:
                     NetworkHandler.C2S_DeleteNetwork(network.getNetworkID());

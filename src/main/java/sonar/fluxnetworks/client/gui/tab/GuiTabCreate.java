@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import sonar.fluxnetworks.api.gui.EnumNavigationTab;
 import sonar.fluxnetworks.api.gui.EnumNetworkColor;
 import sonar.fluxnetworks.api.misc.FeedbackInfo;
-import sonar.fluxnetworks.api.network.SecurityType;
+
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.FluxClientCache;
 import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
@@ -22,7 +22,7 @@ public class GuiTabCreate extends GuiTabEditAbstract {
 
     public GuiTabCreate(@Nonnull FluxMenu container, @Nonnull PlayerEntity player) {
         super(container, player);
-        securityType = SecurityType.PUBLIC;
+
     }
 
     public EnumNavigationTab getNavigationTab() {
@@ -58,7 +58,7 @@ public class GuiTabCreate extends GuiTabEditAbstract {
         if (button instanceof NormalButton) {
             if (mouseButton == 0 && button.id == 3) {
                 //PacketHandler.CHANNEL.sendToServer(new GeneralPacket(GeneralPacketEnum.CREATE_NETWORK, GeneralPacketHandler.getCreateNetworkPacket(name.getText(), color.color, securityType, energyType, password.getText())));
-                NetworkHandler.C2S_CreateNetwork(nameField.getText(), colorBtn.color, securityType, passwordField.getText());
+                NetworkHandler.C2S_CreateNetwork(nameField.getText(), colorBtn.color, passwordField.getText());
             }
         }
     }
