@@ -17,7 +17,6 @@ import sonar.fluxnetworks.client.gui.GuiFluxAdminHome;
 import sonar.fluxnetworks.client.gui.GuiFluxConfiguratorHome;
 import sonar.fluxnetworks.client.gui.GuiFluxDeviceHome;
 import sonar.fluxnetworks.client.gui.basic.GuiTabCore;
-import sonar.fluxnetworks.client.mui.MUIIntegration;
 import sonar.fluxnetworks.client.render.FluxStorageTileRenderer;
 import sonar.fluxnetworks.common.item.ItemFluxConfigurator;
 import sonar.fluxnetworks.common.misc.FluxMenu;
@@ -44,11 +43,8 @@ public class ClientRegistration {
         RenderTypeLookup.setRenderLayer(RegistryBlocks.HERCULEAN_FLUX_STORAGE, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(RegistryBlocks.GARGANTUAN_FLUX_STORAGE, RenderType.getCutout());
 
-        if (FluxConfig.enableGuiDebug && FluxNetworks.modernUILoaded) {
-            MUIIntegration.init();
-        } else {
-            ScreenManager.registerFactory(RegistryBlocks.FLUX_MENU, getScreenFactory());
-        }
+        ScreenManager.registerFactory(RegistryBlocks.FLUX_MENU, getScreenFactory());
+
 
         //RenderingRegistry.registerEntityRenderingHandler(RegistryItems.FIRE_ITEM_ENTITY, manager -> new ItemRenderer(manager, Minecraft.getInstance().getItemRenderer()));
     }
