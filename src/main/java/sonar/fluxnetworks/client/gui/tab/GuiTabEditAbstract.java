@@ -58,7 +58,7 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
             passwordField = FluxTextWidget.create("", font, guiLeft + 20 + l, guiTop + 63, 140 - l, 12).setTextInvisible();
             passwordField.setMaxStringLength(16);
             passwordField.setResponder(string -> onEditSettingsChanged());
-            passwordField.setVisible(securityType == SecurityType.ENCRYPTED);
+            passwordField.setVisible(true);
 
             addButton(nameField);
             addButton(passwordField);
@@ -77,8 +77,6 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
             drawCenterText(matrixStack, getNavigationTab().getTranslatedName(), 88, 10, 0xb4b4b4);
             font.drawString(matrixStack, FluxTranslate.NETWORK_NAME.t() + ":", 14, 30, 0x606060);
             font.drawString(matrixStack, FluxTranslate.NETWORK_SECURITY.t() + ": " + TextFormatting.AQUA + securityType.getName(), 14, 50, 0x606060);
-            if (securityType == SecurityType.ENCRYPTED)
-                font.drawString(matrixStack, FluxTranslate.NETWORK_PASSWORD.t() + ": ", 14, 65, 0x606060);
             //font.drawString(matrixStack, FluxTranslate.NETWORK_ENERGY.t() + ": " + TextFormatting.AQUA + energyType.getName(), 14, 78, 0x606060);
             font.drawString(matrixStack, FluxTranslate.NETWORK_COLOR.t() + ":", 14, 92, 0x606060);
         }
@@ -92,7 +90,7 @@ public abstract class GuiTabEditAbstract extends GuiTabCore {
             if (mouseX > guiLeft + 50 && mouseX < guiLeft + 150 && mouseY > guiTop + 48 && mouseY < getGuiTop() + 60) {
                 securityType = FluxUtils.incrementEnum(securityType, SecurityType.values());
                 passwordField.setText("");
-                passwordField.setVisible(securityType == SecurityType.ENCRYPTED);
+                passwordField.setVisible(true);
                 onEditSettingsChanged();
                 return true;
             }

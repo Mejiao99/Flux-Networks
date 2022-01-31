@@ -22,7 +22,7 @@ public class GuiTabCreate extends GuiTabEditAbstract {
 
     public GuiTabCreate(@Nonnull FluxMenu container, @Nonnull PlayerEntity player) {
         super(container, player);
-        securityType = SecurityType.ENCRYPTED;
+        securityType = SecurityType.PUBLIC;
     }
 
     public EnumNavigationTab getNavigationTab() {
@@ -66,8 +66,7 @@ public class GuiTabCreate extends GuiTabEditAbstract {
     @Override
     public void onEditSettingsChanged() {
         if (create != null) {
-            create.clickable = (securityType != SecurityType.ENCRYPTED
-                    || passwordField.getText().length() != 0) && nameField.getText().length() != 0;
+            create.clickable = nameField.getText().length() != 0;
         }
     }
 

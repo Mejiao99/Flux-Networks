@@ -127,9 +127,8 @@ public enum FluxTranslate {
     BLOCKED(true, "access.blocked"),
     SUPER_ADMIN(true, "access.superadmin"),
 
-    ENCRYPTED(true, "security.encrypted"),
     PUBLIC(true, "security.public"),
-    PRIVATE(true, "security.private"),
+
 
     JEI_CREATING_FLUX(true, "jei.creatingfluxrecipe"),
     JEI_LEFT_CLICK(true, "jei.leftclickhelp");

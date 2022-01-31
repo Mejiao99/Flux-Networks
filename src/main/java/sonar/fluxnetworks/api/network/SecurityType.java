@@ -5,9 +5,8 @@ import sonar.fluxnetworks.api.text.FluxTranslate;
 import javax.annotation.Nonnull;
 
 public enum SecurityType {
-    PUBLIC(FluxTranslate.PUBLIC),
-    ENCRYPTED(FluxTranslate.ENCRYPTED),
-    PRIVATE(FluxTranslate.PRIVATE);
+    PUBLIC(FluxTranslate.PUBLIC);
+
 
     private final FluxTranslate localization;
 

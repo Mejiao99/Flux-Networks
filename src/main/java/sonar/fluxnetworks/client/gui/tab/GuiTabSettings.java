@@ -91,7 +91,7 @@ public class GuiTabSettings extends GuiTabEditAbstract {
     @Override
     public void onEditSettingsChanged() {
         if (networkValid && apply != null) {
-            apply.clickable = ((securityType != SecurityType.ENCRYPTED || passwordField.getText().length() != 0) && nameField.getText().length() != 0);
+            apply.clickable = (nameField.getText().length() != 0);
         }
     }
 
