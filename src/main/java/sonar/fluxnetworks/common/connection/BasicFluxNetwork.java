@@ -12,7 +12,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import sonar.fluxnetworks.api.device.IFluxDevice;
 import sonar.fluxnetworks.api.misc.FluxConstants;
 import sonar.fluxnetworks.api.network.*;
-import sonar.fluxnetworks.common.capability.SuperAdmin;
 import sonar.fluxnetworks.common.misc.FluxUtils;
 
 import javax.annotation.Nonnull;
@@ -47,7 +46,7 @@ public class BasicFluxNetwork implements IFluxNetwork {
     private int networkColor;
     private UUID ownerUUID;
 
-    private int wirelessMode;
+    private boolean wirelessMode;
 
     protected final NetworkStatistics statistics = new NetworkStatistics(this);
     protected final Object2ObjectMap<UUID, NetworkMember> members = new Object2ObjectOpenHashMap<>();
@@ -100,12 +99,12 @@ public class BasicFluxNetwork implements IFluxNetwork {
     }
 
     @Override
-    public int getWirelessMode() {
+    public boolean getWirelessMode() {
         return wirelessMode;
     }
 
     @Override
-    public void setWirelessMode(int wireless) {
+    public void setWirelessMode(boolean wireless) {
         wirelessMode = wireless;
     }
 
@@ -210,7 +209,7 @@ public class BasicFluxNetwork implements IFluxNetwork {
             nbt.putString(NETWORK_NAME, networkName);
             nbt.putInt(NETWORK_COLOR, networkColor);
             nbt.putUniqueId(OWNER_UUID, ownerUUID);
-            nbt.putInt(WIRELESS_MODE, wirelessMode);
+            nbt.putBoolean(WIRELESS_MODE, wirelessMode);
         }
         if (type == FluxConstants.TYPE_SAVE_ALL) {
             Collection<NetworkMember> members = this.members.values();
@@ -314,7 +313,7 @@ public class BasicFluxNetwork implements IFluxNetwork {
             networkName = nbt.getString(NETWORK_NAME);
             networkColor = nbt.getInt(NETWORK_COLOR);
             ownerUUID = nbt.getUniqueId(OWNER_UUID);
-            wirelessMode = nbt.getInt(WIRELESS_MODE);
+            wirelessMode = nbt.getBoolean(WIRELESS_MODE);
         }
         if (type == FluxConstants.TYPE_SAVE_ALL) {
             ListNBT list = nbt.getList(PLAYER_LIST, Constants.NBT.TAG_COMPOUND);

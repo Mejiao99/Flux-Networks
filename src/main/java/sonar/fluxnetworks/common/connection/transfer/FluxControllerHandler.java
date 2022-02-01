@@ -13,7 +13,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import sonar.fluxnetworks.FluxNetworks;
 import sonar.fluxnetworks.api.energy.IItemEnergyHandler;
 import sonar.fluxnetworks.api.network.NetworkMember;
-import sonar.fluxnetworks.api.network.WirelessType;
+
 import sonar.fluxnetworks.common.misc.EnergyUtils;
 import sonar.fluxnetworks.common.tileentity.TileFluxController;
 
@@ -38,7 +38,7 @@ public class FluxControllerHandler extends BasicPointHandler<TileFluxController>
 
     @Override
     public void onCycleStart() {
-        if (!device.isActive() || !WirelessType.ENABLE_WIRELESS.isActivated(device.getNetwork())) {
+        if (!device.isActive()) {
             demand = 0;
             clearPlayers();
             return;
@@ -71,7 +71,6 @@ public class FluxControllerHandler extends BasicPointHandler<TileFluxController>
     public long sendToConsumers(long energy, boolean simulate) {
         if (!device.isActive()) return 0;
         if ((timer & 0x3) > 0) return 0;
-        if (!WirelessType.ENABLE_WIRELESS.isActivated(device.getNetwork())) return 0;
         return chargeAllItems(energy, simulate);
     }
 
@@ -104,7 +103,7 @@ public class FluxControllerHandler extends BasicPointHandler<TileFluxController>
     private void updatePlayers() {
         clearPlayers();
         PlayerList playerList = ServerLifecycleHooks.getCurrentServer().getPlayerList();
-        int wireless = device.getNetwork().getWirelessMode();
+
         for (NetworkMember p : device.getNetwork().getAllMembers()) {
             ServerPlayerEntity player = playerList.getPlayerByUUID(p.getPlayerUUID());
             if (player == null || CHARGING_PLAYERS.contains(player)) {
@@ -112,35 +111,7 @@ public class FluxControllerHandler extends BasicPointHandler<TileFluxController>
             }
             final PlayerInventory inv = player.inventory;
             List<WirelessHandler> handlers = new ArrayList<>();
-            if (WirelessType.MAIN_HAND.isActivated(wireless)) {
-                handlers.add(new WirelessHandler(() -> new Iterator<ItemStack>() {
-                    private byte count;
 
-                    @Override
-                    public boolean hasNext() {
-                        return count < 1;
-                    }
-
-                    @Override
-                    public ItemStack next() {
-                        count++;
-                        return inv.getCurrentItem();
-                    }
-                }, NOT_EMPTY));
-            }
-            if (WirelessType.OFF_HAND.isActivated(wireless)) {
-                handlers.add(new WirelessHandler(inv.offHandInventory::iterator, NOT_EMPTY));
-            }
-            if (WirelessType.HOT_BAR.isActivated(wireless)) {
-                handlers.add(new WirelessHandler(() -> inv.mainInventory.subList(0, 9).iterator(),
-                        stack -> {
-                            ItemStack heldItem = inv.getCurrentItem();
-                            return !stack.isEmpty() && (heldItem.isEmpty() || heldItem != stack);
-                        }));
-            }
-            if (WirelessType.ARMOR.isActivated(wireless)) {
-                handlers.add(new WirelessHandler(inv.armorInventory::iterator, NOT_EMPTY));
-            }
             players.put(player, handlers);
             CHARGING_PLAYERS.add(player);
         }

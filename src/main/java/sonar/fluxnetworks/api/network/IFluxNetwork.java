@@ -41,9 +41,10 @@ public interface IFluxNetwork {
 
     void setNetworkColor(int color);
 
-    int getWirelessMode();
+    // TODO: delete this
+    boolean getWirelessMode();
 
-    void setWirelessMode(int wireless);
+    void setWirelessMode(boolean wireless);
 
     UUID getOwnerUUID();
 

@@ -32,10 +32,6 @@ public class SimpleObservableList<T> extends ArrayList<T> {
         List<T> currentElements = Lists.newArrayList(this);
         currentElements.remove(newElements);
 
-        Iterator<T> it = newElements.iterator();
-        while(it.hasNext()){
-
-        }
     }
 
     @Override

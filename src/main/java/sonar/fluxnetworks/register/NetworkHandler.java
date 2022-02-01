@@ -334,7 +334,7 @@ public class NetworkHandler {
         if (!network.isValid()) {
             return;
         }
-        network.setWirelessMode(buf.readVarInt());
+        network.setWirelessMode(buf.readBoolean());
         sendToPlayer(S2C_UpdateNetwork(network, FluxConstants.TYPE_NET_BASIC), player);
         S2C_Response(FeedbackInfo.SUCCESS, player);
 
@@ -717,10 +717,10 @@ public class NetworkHandler {
 
     // edit wireless mode
     @OnlyIn(Dist.CLIENT)
-    public static void C2S_EditWireless(int networkID, int mode) {
+    public static void C2S_EditWireless(int networkID, boolean mode) {
         PacketBuffer buf = buffer(4);
         buf.writeVarInt(networkID);
-        buf.writeVarInt(mode);
+        buf.writeBoolean(mode);
         sendToServer(buf);
     }
 

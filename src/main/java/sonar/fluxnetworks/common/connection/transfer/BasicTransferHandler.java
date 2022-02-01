@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 
 public abstract class BasicTransferHandler<T extends IFluxDevice> implements ITransferHandler {
 
+    // TODO: DELETE THIS
     protected final T device;
 
     protected long buffer;

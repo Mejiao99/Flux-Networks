@@ -4,12 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import sonar.fluxnetworks.api.gui.EnumNavigationTab;
 import sonar.fluxnetworks.api.misc.FeedbackInfo;
-import sonar.fluxnetworks.api.network.WirelessType;
+
 import sonar.fluxnetworks.api.text.FluxTranslate;
 import sonar.fluxnetworks.client.FluxClientCache;
 import sonar.fluxnetworks.client.gui.basic.GuiButtonCore;
 import sonar.fluxnetworks.client.gui.basic.GuiTabCore;
-import sonar.fluxnetworks.client.gui.button.InventoryButton;
+
 import sonar.fluxnetworks.client.gui.button.InvisibleButton;
 import sonar.fluxnetworks.client.gui.button.NormalButton;
 import sonar.fluxnetworks.client.gui.button.SlidedSwitchButton;
@@ -24,10 +24,11 @@ public class GuiTabWireless extends GuiTabCore {
 
     public InvisibleButton redirectButton;
 
-    public List<InventoryButton> inventoryButtonList = new ArrayList<>();
+
     public NormalButton apply;
 
-    public int wirelessMode;
+    // TODO: DELETE THIS
+    public boolean wirelessMode;
 
     public GuiTabWireless(@Nonnull FluxMenu container, @Nonnull PlayerEntity player) {
         super(container, player);
@@ -54,19 +55,13 @@ public class GuiTabWireless extends GuiTabCore {
     public void init() {
         super.init();
         configureNavigationButtons(EnumNavigationTab.TAB_WIRELESS, navigationTabs);
-        inventoryButtonList.clear();
-        buttonLists.add(inventoryButtonList);
+
+
         if (networkValid) {
 
             wirelessMode = network.getWirelessMode();
 
-            switches.add(new SlidedSwitchButton(140, 156, 4, guiLeft, guiTop, WirelessType.ENABLE_WIRELESS.isActivated(wirelessMode)));
-            inventoryButtonList.add(new InventoryButton(WirelessType.ARMOR, this, 24, 32, 0, 80, 52, 16));
-            inventoryButtonList.add(new InventoryButton(WirelessType.CURIOS, this, 100, 32, 0, 80, 52, 16));
-            inventoryButtonList.add(new InventoryButton(WirelessType.INVENTORY, this, 32, 56, 0, 0, 112, 40));
-            inventoryButtonList.add(new InventoryButton(WirelessType.HOT_BAR, this, 32, 104, 112, 0, 112, 16));
-            inventoryButtonList.add(new InventoryButton(WirelessType.MAIN_HAND, this, 136, 128, 52, 80, 16, 16));
-            inventoryButtonList.add(new InventoryButton(WirelessType.OFF_HAND, this, 24, 128, 52, 80, 16, 16));
+            switches.add(new SlidedSwitchButton(140, 156, 4, guiLeft, guiTop, wirelessMode));
 
             apply = new NormalButton(FluxTranslate.APPLY.t(), 73, 130, 32, 12, 0).setUnclickable();
             buttons.add(apply);
@@ -83,25 +78,20 @@ public class GuiTabWireless extends GuiTabCore {
         if (mouseButton != 0) {
             return;
         }
-        if (button instanceof InventoryButton) {
-            switchSetting(((InventoryButton) button).type);
-        }
         if (button instanceof NormalButton && button.id == 0) {
             NetworkHandler.C2S_EditWireless(network.getNetworkID(), wirelessMode);
         }
         if (button instanceof SlidedSwitchButton) {
             ((SlidedSwitchButton) button).switchButton();
             if (button.id == 4) {
-                switchSetting(WirelessType.ENABLE_WIRELESS);
+                switchSetting();
             }
         }
     }
 
-    public void switchSetting(WirelessType type) {
-        if (type != WirelessType.INVENTORY) {
-            wirelessMode ^= 1 << type.ordinal();
-            apply.clickable = true;
-        }
+    public void switchSetting() {
+        wirelessMode = !wirelessMode;
+        apply.clickable = true;
     }
 
     @Override
