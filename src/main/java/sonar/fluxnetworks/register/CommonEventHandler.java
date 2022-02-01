@@ -26,8 +26,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import sonar.fluxnetworks.FluxConfig;
 import sonar.fluxnetworks.api.misc.FluxConstants;
 import sonar.fluxnetworks.api.network.IFluxNetwork;
-import sonar.fluxnetworks.common.capability.SuperAdmin;
-import sonar.fluxnetworks.common.capability.SuperAdminProvider;
+
 import sonar.fluxnetworks.common.registry.RegistryBlocks;
 import sonar.fluxnetworks.common.registry.RegistryItems;
 import sonar.fluxnetworks.common.storage.FluxChunkManager;
@@ -150,15 +149,15 @@ public class CommonEventHandler {
         NetworkHandler.sendToPlayer(
                 NetworkHandler.S2C_UpdateNetwork(FluxNetworkData.getAllNetworks(), FluxConstants.TYPE_NET_BASIC),
                 event.getPlayer());
-        NetworkHandler.S2C_SuperAdmin(SuperAdmin.isPlayerSuperAdmin(event.getPlayer()), event.getPlayer());
+//        NetworkHandler.S2C_SuperAdmin(SuperAdmin.isPlayerSuperAdmin(event.getPlayer()), event.getPlayer());
     }
 
-    @SubscribeEvent
-    public static void onAttachCapability(@Nonnull AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(SuperAdmin.CAP_KEY, new SuperAdminProvider());
-        }
-    }
+//    @SubscribeEvent
+//    public static void onAttachCapability(@Nonnull AttachCapabilitiesEvent<Entity> event) {
+//        if (event.getObject() instanceof PlayerEntity) {
+//            event.addCapability(SuperAdmin.CAP_KEY, new SuperAdminProvider());
+//        }
+//    }
 
     //// TILE EVENTS \\\\
 

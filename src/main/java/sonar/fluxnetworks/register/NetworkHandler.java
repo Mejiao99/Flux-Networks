@@ -42,7 +42,7 @@ import sonar.fluxnetworks.api.network.*;
 import sonar.fluxnetworks.client.FluxClientCache;
 import sonar.fluxnetworks.client.gui.GuiFluxAdminHome;
 import sonar.fluxnetworks.client.gui.basic.GuiFluxCore;
-import sonar.fluxnetworks.common.capability.SuperAdmin;
+
 import sonar.fluxnetworks.common.misc.FluxUtils;
 import sonar.fluxnetworks.common.registry.RegistryItems;
 import sonar.fluxnetworks.common.storage.FluxChunkManager;
@@ -111,11 +111,11 @@ public class NetworkHandler {
     }
 
     // update client super admin state
-    public static void S2C_SuperAdmin(boolean state, PlayerEntity player) {
-        PacketBuffer buf = buffer(2);
-        buf.writeBoolean(state);
-        sendToPlayer(buf, player);
-    }
+//    public static void S2C_SuperAdmin(boolean state, PlayerEntity player) {
+//        PacketBuffer buf = buffer(2);
+//        buf.writeBoolean(state);
+//        sendToPlayer(buf, player);
+//    }
 
     // update flux network data
     @Nonnull
@@ -161,7 +161,7 @@ public class NetworkHandler {
                 tileEntity(buf, player);
                 break;
             case 1:
-                responseSuperAdmin(buf, player);
+//                responseSuperAdmin(buf, player);
                 break;
             case 2:
                 editMember(buf, player);
@@ -221,18 +221,18 @@ public class NetworkHandler {
         }
     }
 
-    private static void responseSuperAdmin(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
-        ISuperAdmin sa = FluxUtils.get(player.getCapability(FluxCapabilities.SUPER_ADMIN));
-        if (sa != null && (sa.hasPermission() || SuperAdmin.canActivateSuperAdmin(player))) {
-            sa.changePermission();
-            if (sa.hasPermission()) {
-                S2C_Response(FeedbackInfo.SA_ON, player);
-            } else {
-                S2C_Response(FeedbackInfo.SA_OFF, player);
-            }
-            S2C_SuperAdmin(sa.hasPermission(), player);
-        }
-    }
+//    private static void responseSuperAdmin(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity player) {
+//        ISuperAdmin sa = FluxUtils.get(player.getCapability(FluxCapabilities.SUPER_ADMIN));
+//        if (sa != null && (sa.hasPermission() || SuperAdmin.canActivateSuperAdmin(player))) {
+//            sa.changePermission();
+//            if (sa.hasPermission()) {
+//                S2C_Response(FeedbackInfo.SA_ON, player);
+//            } else {
+//                S2C_Response(FeedbackInfo.SA_OFF, player);
+//            }
+//            S2C_SuperAdmin(sa.hasPermission(), player);
+//        }
+//    }
 
     private static void editMember(@Nonnull PacketBuffer buf, @Nonnull ServerPlayerEntity sender) {
         final IFluxNetwork network = FluxNetworkData.getNetwork(buf.readVarInt());

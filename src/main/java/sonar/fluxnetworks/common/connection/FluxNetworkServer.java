@@ -8,7 +8,7 @@ import sonar.fluxnetworks.api.device.IFluxPoint;
 
 import sonar.fluxnetworks.api.network.FluxLogicType;
 import sonar.fluxnetworks.api.network.NetworkMember;
-import sonar.fluxnetworks.common.capability.SuperAdmin;
+
 import sonar.fluxnetworks.common.misc.FluxUtils;
 
 import javax.annotation.Nonnull;

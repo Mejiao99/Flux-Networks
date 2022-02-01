@@ -4,12 +4,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
-import sonar.fluxnetworks.api.network.ISuperAdmin;
 
 public class FluxCapabilities {
-
-    @CapabilityInject(ISuperAdmin.class)
-    public static Capability<ISuperAdmin> SUPER_ADMIN = null;
 
     /**
      * Only make use of this capability if your mod can send/receive energy at a rate greater than Integer.MAX_VALUE
